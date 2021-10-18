@@ -60,6 +60,14 @@ function App() {
           </Grid>
         </Grid>
       </Box>
+      <Box sx={{ flexGrow: 1, padding: "1rem" }}>
+        <a href="https://github.com/daisuke-awaji/typeorm-query-param-mapper">
+          <img
+            src="https://github.githubassets.com/images/modules/site/icons/footer/github-mark.svg"
+            alt="github-logo"
+          />
+        </a>
+      </Box>
     </>
   );
 }
