@@ -39,15 +39,14 @@ function App() {
           <Grid item xs={12} md={6}>
             <TextareaAutosize
               placeholder="Input"
-              maxRows={4}
-              style={{ width: "100%", height: "70vh" }}
+              style={{ width: "100%", minHeight: "70vh" }}
               value={sqlInput}
               onChange={(e) => setSqlInput(e.target.value)}
               onBlur={() => setSqlInput(format(sqlInput, { language: "mysql" }))}
             />
             <TextareaAutosize
               placeholder="Parameters (delimited by comma)"
-              style={{ width: "100%", height: "8vh" }}
+              style={{ width: "100%", minHeight: "8vh" }}
               value={parameters}
               onChange={(e) => setParameters(e.target.value)}
             />
@@ -55,7 +54,7 @@ function App() {
           <Grid item xs={12} md={6}>
             <TextareaAutosize
               placeholder="Output"
-              style={{ width: "100%", height: "70vh", color: "black" }}
+              style={{ width: "100%", minHeight: "70vh", color: "black" }}
               value={sqlOutput}
               disabled
             />
