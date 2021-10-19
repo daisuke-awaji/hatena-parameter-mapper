@@ -1,22 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Grid, TextareaAutosize } from "@mui/material";
 import { format } from "sql-formatter";
-
-const mapByParameters = (sql: string, parameters: any[]) => {
-  const converted = parameters.reduce((sqlReplace, param) => {
-    if (typeof param === "string") {
-      param = "'" + param + "'";
-    }
-    if (typeof param === "object") {
-      param = param.map((p: any) => {
-        return typeof p === "string" ? "'" + p + "'" : p;
-      });
-    }
-    return sqlReplace.replace("?", param);
-  }, sql);
-
-  return converted;
-};
+import { mapByParameters, csvDelimitedStringToArray } from "./mapByParameters";
 
 function App() {
   const [sqlInput, setSqlInput] = useState("");
@@ -24,7 +9,10 @@ function App() {
   const [sqlOutput, setSqlOutput] = useState("");
 
   useEffect(() => {
-    const mapped = mapByParameters(sqlInput, parameters.replace(/\r?\n/g, "").split(","));
+    // 改行とクォートを取り除く
+    const replaced = csvDelimitedStringToArray(parameters);
+    console.log(replaced);
+    const mapped = mapByParameters(sqlInput, replaced);
     setSqlOutput(mapped);
   }, [sqlInput, parameters]);
 
