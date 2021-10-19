@@ -3,6 +3,42 @@ import { Box, Grid, TextareaAutosize } from "@mui/material";
 import { format } from "sql-formatter";
 import { mapByParameters, csvDelimitedStringToArray } from "./mapByParameters";
 
+const PLACE_HOLDER_INPUT = `Input your sql.
+
+e.g.
+
+SELECT
+  user_id,
+  user_name
+FROM
+  user
+WHERE
+  user_id = ?
+  AND user_name = ?
+`;
+
+const PLACE_HOLDER_OUTPUT = `Output your sql.
+
+e.g.
+
+SELECT
+  user_id,
+  user_name
+FROM
+  user
+WHERE
+  user_id = '0001'
+  AND user_name = 'John'
+`;
+
+const PLACE_HOLDER_PARAMETERS = `Parameters (delimited by comma).
+
+e.g.
+
+0001,
+John
+`;
+
 function App() {
   const [sqlInput, setSqlInput] = useState("");
   const [parameters, setParameters] = useState("");
@@ -26,14 +62,14 @@ function App() {
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <TextareaAutosize
-              placeholder="Input"
+              placeholder={PLACE_HOLDER_INPUT}
               style={{ width: "100%", minHeight: "70vh" }}
               value={sqlInput}
               onChange={(e) => setSqlInput(e.target.value)}
               onBlur={() => setSqlInput(format(sqlInput, { language: "mysql" }))}
             />
             <TextareaAutosize
-              placeholder="Parameters (delimited by comma)"
+              placeholder={PLACE_HOLDER_PARAMETERS}
               style={{ width: "100%", minHeight: "8vh" }}
               value={parameters}
               onChange={(e) => setParameters(e.target.value)}
@@ -41,7 +77,7 @@ function App() {
           </Grid>
           <Grid item xs={12} md={6}>
             <TextareaAutosize
-              placeholder="Output"
+              placeholder={PLACE_HOLDER_OUTPUT}
               style={{ width: "100%", minHeight: "70vh", color: "black" }}
               value={sqlOutput}
               disabled
