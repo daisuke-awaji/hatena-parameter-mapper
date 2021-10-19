@@ -76,7 +76,6 @@ function App() {
   useEffect(() => {
     // 改行とクォートを取り除く
     const replaced = csvDelimitedStringToArray(parameters);
-    console.log(replaced);
     const mapped = mapByParameters(sqlInput, replaced);
     setSqlOutput(mapped);
   }, [sqlInput, parameters]);
