@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, TextareaAutosize } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextareaAutosize,
+} from "@mui/material";
 import { format } from "sql-formatter";
 import { mapByParameters, csvDelimitedStringToArray } from "./mapByParameters";
 
@@ -39,10 +48,30 @@ e.g.
 John
 `;
 
+const SQL_FORMAT_LANGUAGES = [
+  "none",
+  "mysql",
+  "db2",
+  "mariadb",
+  "n1ql",
+  "plsql",
+  "postgresql",
+  "redshift",
+  "spark",
+  "sql",
+  "tsql",
+];
+
 function App() {
   const [sqlInput, setSqlInput] = useState("");
   const [parameters, setParameters] = useState("");
   const [sqlOutput, setSqlOutput] = useState("");
+
+  const [formatter, setFormatter] = useState("mysql");
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setFormatter(event.target.value as any);
+  };
 
   useEffect(() => {
     // 改行とクォートを取り除く
@@ -55,8 +84,28 @@ function App() {
   return (
     <>
       <Box sx={{ flexGrow: 1, padding: "1rem" }}>
-        <h1>? Parameter Mapper</h1>
-        <div>Embeds the inputted parameters into the ?. Currently support only sql format.</div>
+        <Grid container spacing={2} direction="row" justifyContent="center" alignItems="flex-end">
+          <Grid item xs={12} md={6}>
+            <h1>? Parameter Mapper</h1>
+            <div>Embeds the inputted parameters into the ?. Currently support only sql format.</div>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <InputLabel id="formatter-select-label">Formatter</InputLabel>
+              <Select
+                labelId="formatter-select-label"
+                id="formatter-select"
+                value={formatter}
+                label="Formatter"
+                onChange={handleChange}
+              >
+                {SQL_FORMAT_LANGUAGES.map((lg) => {
+                  return <MenuItem value={lg}>{lg}</MenuItem>;
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
       </Box>
       <Box sx={{ flexGrow: 1, padding: "1rem", minHeight: "85vh" }}>
         <Grid container spacing={2}>
@@ -66,7 +115,9 @@ function App() {
               style={{ width: "100%", minHeight: "70vh" }}
               value={sqlInput}
               onChange={(e) => setSqlInput(e.target.value)}
-              onBlur={() => setSqlInput(format(sqlInput, { language: "mysql" }))}
+              onBlur={() => {
+                setSqlInput(formatter === "none" ? sqlInput : format(sqlInput, { language: formatter as any }));
+              }}
             />
             <TextareaAutosize
               placeholder={PLACE_HOLDER_PARAMETERS}
