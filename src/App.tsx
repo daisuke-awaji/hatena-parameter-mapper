@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import Tooltip from "@material-ui/core/Tooltip";
+
 import { format } from "sql-formatter";
 import { mapByParameters, csvDelimitedStringToArray } from "./mapByParameters";
 import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
+import CopyToClipBoard from "react-copy-to-clipboard";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 import "prismjs/components/prism-clike";
 import "prismjs/components/prism-sql";
@@ -59,6 +63,29 @@ const SQL_FORMAT_LANGUAGES = [
   "tsql",
 ];
 
+const CopyIcon: React.FC<{ input: string }> = ({ input }) => {
+  const [openTip, setOpenTip] = useState<boolean>(false);
+  const handleCloseTip = (): void => {
+    setOpenTip(false);
+  };
+
+  const handleClickButton = (): void => {
+    setOpenTip(true);
+  };
+
+  return (
+    <div style={{ textAlign: "right" }}>
+      <Tooltip arrow open={openTip} onClose={handleCloseTip} disableHoverListener placement="top" title="Copied!">
+        <CopyToClipBoard text={input}>
+          <IconButton disabled={input === ""} onClick={handleClickButton}>
+            <ContentCopyIcon />
+          </IconButton>
+        </CopyToClipBoard>
+      </Tooltip>
+    </div>
+  );
+};
+
 function App() {
   const [sqlInput, setSqlInput] = useState("");
   const [parameters, setParameters] = useState("");
@@ -111,9 +138,11 @@ function App() {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ flexGrow: 1, padding: "1rem", minHeight: "85vh" }}>
+      <Box sx={{ flexGrow: 1, paddingLeft: "1rem", paddingRight: "1rem", minHeight: "85vh" }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
+            <CopyIcon input={sqlInput} />
+
             <Editor
               value={sqlInput}
               onValueChange={(code) => setSqlInput(code)}
@@ -154,6 +183,8 @@ function App() {
             />
           </Grid>
           <Grid item xs={12} md={6}>
+            <CopyIcon input={sqlOutput} />
+
             <Editor
               value={sqlOutput}
               onValueChange={(code) => code}
