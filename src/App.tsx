@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  TextareaAutosize,
-} from "@mui/material";
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { format } from "sql-formatter";
 import { mapByParameters, csvDelimitedStringToArray } from "./mapByParameters";
+import Editor from "react-simple-code-editor";
+import { highlight, languages } from "prismjs";
+
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-sql";
+import "prismjs/themes/prism.css";
 
 const PLACE_HOLDER_INPUT = `Input your sql.
 
@@ -74,10 +71,14 @@ function App() {
   };
 
   useEffect(() => {
-    // 改行とクォートを取り除く
-    const replaced = csvDelimitedStringToArray(parameters);
-    const mapped = mapByParameters(sqlInput, replaced);
-    setSqlOutput(mapped);
+    try {
+      // 改行とクォートを取り除く
+      const replaced = csvDelimitedStringToArray(parameters);
+      const mapped = mapByParameters(sqlInput, replaced);
+      setSqlOutput(mapped);
+    } catch (e) {
+      console.error(e);
+    }
   }, [sqlInput, parameters]);
 
   return (
@@ -99,7 +100,11 @@ function App() {
                 onChange={handleChange}
               >
                 {SQL_FORMAT_LANGUAGES.map((lg) => {
-                  return <MenuItem value={lg}>{lg}</MenuItem>;
+                  return (
+                    <MenuItem key={lg} value={lg}>
+                      {lg}
+                    </MenuItem>
+                  );
                 })}
               </Select>
             </FormControl>
@@ -109,27 +114,61 @@ function App() {
       <Box sx={{ flexGrow: 1, padding: "1rem", minHeight: "85vh" }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <TextareaAutosize
-              placeholder={PLACE_HOLDER_INPUT}
-              style={{ width: "100%", minHeight: "70vh" }}
+            <Editor
               value={sqlInput}
-              onChange={(e) => setSqlInput(e.target.value)}
+              onValueChange={(code) => setSqlInput(code)}
+              highlight={(code) => highlight(code, languages.sql, "sql")}
+              placeholder={PLACE_HOLDER_INPUT}
+              padding={10}
               onBlur={() => {
                 setSqlInput(formatter === "none" ? sqlInput : format(sqlInput, { language: formatter as any }));
               }}
+              style={{
+                fontFamily: '"Fira code", "Fira Mono", monospace',
+                fontSize: 12,
+                outline: "solid 1px",
+                outlineColor: "rgb(64, 44, 27, .6)",
+                width: "100%",
+                minHeight: "70vh",
+                backgroundColor: "rgba(250, 247, 237, 0.7)",
+                borderRadius: "0.25rem",
+              }}
             />
-            <TextareaAutosize
-              placeholder={PLACE_HOLDER_PARAMETERS}
-              style={{ width: "100%", minHeight: "8vh" }}
+            <div style={{ paddingBottom: "1vh" }}></div>
+            <Editor
               value={parameters}
-              onChange={(e) => setParameters(e.target.value)}
+              onValueChange={(code) => setParameters(code)}
+              highlight={(code) => highlight(code, languages.sql, "sql")}
+              placeholder={PLACE_HOLDER_PARAMETERS}
+              padding={10}
+              style={{
+                fontFamily: '"Fira code", "Fira Mono", monospace',
+                fontSize: 12,
+                outline: "solid 1px",
+                outlineColor: "rgb(64, 44, 27, .6)",
+                width: "100%",
+                minHeight: "10vh",
+                backgroundColor: "rgba(250, 247, 237, 0.7)",
+                borderRadius: "0.25rem",
+              }}
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <TextareaAutosize
-              placeholder={PLACE_HOLDER_OUTPUT}
-              style={{ width: "100%", minHeight: "70vh", color: "black" }}
+            <Editor
               value={sqlOutput}
+              onValueChange={(code) => code}
+              highlight={(code) => highlight(code, languages.sql, "sql")}
+              placeholder={PLACE_HOLDER_OUTPUT}
+              padding={10}
+              style={{
+                fontFamily: '"Fira code", "Fira Mono", monospace',
+                fontSize: 12,
+                outline: "1px solid rgba(24, 51, 71, .6)",
+                width: "100%",
+                minHeight: "70vh",
+                backgroundColor: "rgba(244, 248, 243, 0.7)",
+                borderRadius: "0.25rem",
+              }}
               disabled
             />
           </Grid>

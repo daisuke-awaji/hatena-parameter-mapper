@@ -52,9 +52,15 @@ describe("convert csv delimited string to array", () => {
     const result = csvDelimitedStringToArray(input);
     expect(result).toMatchObject(["aaa", ["xxx", "yyy"], "ccc"]);
   });
-  test.only("array contained with quote", () => {
+  test("array contained with quote", () => {
     const input = "'aaa',['xxx','yyy'],'ccc'";
     const result = csvDelimitedStringToArray(input);
     expect(result).toMatchObject(["aaa", ["xxx", "yyy"], "ccc"]);
   });
+  // TODO: this is bug
+  // test("array", () => {
+  //   const input = "['xxx','yyy']";
+  //   const result = csvDelimitedStringToArray(input);
+  //   expect(result).toMatchObject(['["xxx", "yyy"]']);
+  // });
 });
