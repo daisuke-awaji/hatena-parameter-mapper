@@ -149,6 +149,7 @@ function App() {
               highlight={(code) => highlight(code, languages.sql, "sql")}
               placeholder={PLACE_HOLDER_INPUT}
               padding={10}
+              ignoreTabKey={true}
               onBlur={() => {
                 setSqlInput(formatter === "none" ? sqlInput : format(sqlInput, { language: formatter as any }));
               }}
@@ -169,6 +170,7 @@ function App() {
               onValueChange={(code) => setParameters(code)}
               highlight={(code) => highlight(code, languages.sql, "sql")}
               placeholder={PLACE_HOLDER_PARAMETERS}
+              ignoreTabKey={true}
               padding={10}
               style={{
                 fontFamily: '"Fira code", "Fira Mono", monospace',
