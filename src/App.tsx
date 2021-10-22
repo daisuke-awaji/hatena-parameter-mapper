@@ -8,6 +8,7 @@ import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
 import CopyToClipBoard from "react-copy-to-clipboard";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { useQueryState } from "react-router-use-location-state";
 
 import "prismjs/components/prism-clike";
 import "prismjs/components/prism-sql";
@@ -87,8 +88,8 @@ const CopyIcon: React.FC<{ input: string }> = ({ input }) => {
 };
 
 function App() {
-  const [sqlInput, setSqlInput] = useState("");
-  const [parameters, setParameters] = useState("");
+  const [sqlInput, setSqlInput] = useQueryState("sql", "");
+  const [parameters, setParameters] = useQueryState("p", "");
   const [sqlOutput, setSqlOutput] = useState("");
 
   const [formatter, setFormatter] = useState("mysql");
