@@ -1,0 +1,8 @@
+/*.html
+  Cache-Control: public, max-age=28800, must-revalidate
+
+/*.css
+  Cache-Control: public, max-age=28800, must-revalidate
+
+/*.js
+  Cache-Control: public, max-age=28800, must-revalidate
